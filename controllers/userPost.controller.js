@@ -11,7 +11,7 @@ const addPost = async (req, res) => {
     const addingPostProcess = await UserPost.create({
       postId: uuidv4(),
       title,
-      postImage,
+      postImage: Buffer.from(postImage, "base64"),
       postDate: new Date().toString(),
       description,
       userId: userId,

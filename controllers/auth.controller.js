@@ -12,7 +12,7 @@ const User = db.User;
 
 const userRegister = async (req, res) => {
   try {
-    const { email, password, phoneNumber, dateOfBirth, userName } = req.body;
+    const { email, password, userName } = req.body;
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const minPassLength = 8;
@@ -22,9 +22,9 @@ const userRegister = async (req, res) => {
       return res.status(400).json({ message: "Invalid Email Address" });
     }
 
-    if (password.length <= minPassLength || password.length >= maxPassLength) {
+    if (password.length >= minPassLength || password.length <= maxPassLength) {
       return res.status(400).json({
-        message: `Password must be between ${minPassLength} and ${maxPassLength}`,
+        message: `Password must be between ${minPassLength} and ${maxPassLength} characters`,
       });
     }
 
@@ -49,8 +49,6 @@ const userRegister = async (req, res) => {
       userId: uuidv4(),
       email,
       password: hashedPassword,
-      phoneNumber,
-      dateOfBirth,
       userName,
     });
 
@@ -88,9 +86,7 @@ const userLogin = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_DURATION }
     );
-    return res
-      .status(200)
-      .json({ message: "Succesfully Login", userData, token });
+    return res.status(200).json({ message: "Login Success", userData, token });
   } catch (err) {
     return errorCatch(res, err, 400, "Login");
   }
@@ -122,7 +118,7 @@ const getAllUser = async (req, res) => {
 
     return res.status(200).json({
       payload: { userDatas },
-      message: "Succesfully get All the User Data",
+      message: "Successfully get All the User Data",
     });
   } catch (err) {
     return errorCatch(res, err, 400, "Get All the User Data");
@@ -170,8 +166,7 @@ const editUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const { email, password, phoneNumber, dateOfBirth, userName, userImage } =
-      req.body;
+    const { email, password, userName, userImage } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     userData = await User.update(
       {
@@ -185,7 +180,7 @@ const editUser = async (req, res) => {
       { where: { userId: userId } }
     );
 
-    return res.status(200).json({ message: "Succesfully Edit User" });
+    return res.status(200).json({ message: "Successfully Edit User" });
   } catch (err) {
     return errorCatch(res, err, 400, "Edit User");
   }

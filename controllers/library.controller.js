@@ -4,24 +4,43 @@ const errorCatch = require("../errors/errorCatch");
 
 const Library = db.Library;
 const Book = db.Book;
-
+/*
+"userId": "aad8ab21-d",
+    "title": "After Lives",
+    "author": "Abdul Razak Gurnah",
+    "page": 288,
+    "coverURL": "Test",
+    "readStatus": "Reading",
+    "pageProgress": 19
+*/
 const addBookToLib = async (req, res) => {
   try {
-    const { userId, bookId, readStatus, pageProgress } = req.body;
+    const { userId, title, readStatus, pageProgress, listType } = req.body;
 
-    const book = await Book.findOne({ where: { bookId: bookId } });
+    const isBookDataExist = await Book.findOne({ where: { title: title } });
 
-    if (!book) {
-      return res.status(404).json({ message: "Book is in Library" });
+    if (!isBookDataExist) {
+      return res.status(404).json({ message: "Book not Found" });
+    }
+
+    const isInLibrary = await Library.findOne({
+      where: { userId: userId, bookId: isBookDataExist.bookId },
+    });
+
+    if (isInLibrary) {
+      return res
+        .status(409)
+        .json({ message: "Book is already in the library" });
     }
 
     const newLibrary = await Library.create({
       libraryId: uuidv4(),
       userId: userId,
-      bookId: bookId,
+      bookId: isBookDataExist.bookId,
       readStatus,
       pageProgress,
       dateAdded: new Date().toString(),
+      listType,
     });
 
     return res.status(200).json({
@@ -80,24 +99,16 @@ const updateBookDataInLib = async (req, res) => {
 const getAllBookLibByUserId = async (req, res) => {
   try {
     const userId = req.params.id;
-    const page = req.query.page || 1;
-    const itemsPerPage = req.query.itemsPerPage || 10;
-
-    const offset = (page - 1) * itemsPerPage;
 
     const libBooks = await Library.findAll({
       where: { userId: userId },
-      limit: itemsPerPage,
-      offset: offset,
+      include: [
+        { model: Book, attributes: ["coverImage", "page", "author", "title"] },
+      ],
     });
-
-    const totalBooks = await Library.count({ where: { userId: userId } });
-    const totalPages = Math.ceil(totalBooks / itemsPerPage);
 
     return res.status(200).json({
       libraryBooks: libBooks,
-      currentPage: page,
-      totalPages: totalPages,
     });
   } catch (err) {
     errorCatch(res, err, 500, "Get All User's Book");

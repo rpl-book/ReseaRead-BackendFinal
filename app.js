@@ -4,10 +4,6 @@ const app = express();
 
 require("dotenv").config();
 
-let corOptions = {
-  origin: "https://localhost:8080",
-};
-
 // Routers
 const userRouter = require("./routes/auth.route");
 const userPostRouter = require("./routes/userPost.route");
@@ -16,7 +12,7 @@ const libraryRouter = require("./routes/library.route");
 const reviewRouter = require("./routes/review.route");
 
 // Middlewares
-app.use(cors(corOptions));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

@@ -41,9 +41,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       coverImage: {
-        type: DataTypes.BLOB,
+        type: DataTypes.STRING,
         allowNull: true,
-        defaultValue: "./images/coverPlaceholder.png",
       },
       page: {
         type: DataTypes.INTEGER,

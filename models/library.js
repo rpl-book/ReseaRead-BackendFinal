@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
+      listType: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
     { sequelize, modelName: "Library", tableName: "Tbl_Library" }
   );
