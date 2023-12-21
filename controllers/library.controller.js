@@ -4,15 +4,7 @@ const errorCatch = require("../errors/errorCatch");
 
 const Library = db.Library;
 const Book = db.Book;
-/*
-"userId": "aad8ab21-d",
-    "title": "After Lives",
-    "author": "Abdul Razak Gurnah",
-    "page": 288,
-    "coverURL": "Test",
-    "readStatus": "Reading",
-    "pageProgress": 19
-*/
+
 const addBookToLib = async (req, res) => {
   try {
     const { userId, title, readStatus, pageProgress, listType } = req.body;
@@ -99,12 +91,23 @@ const updateBookDataInLib = async (req, res) => {
 const getAllBookLibByUserId = async (req, res) => {
   try {
     const userId = req.params.id;
+    const page = req.query.page;
+    const booksPerPage = req.query.booksPerPage;
+
+    const hasPagination = page !== undefined && booksPerPage !== undefined;
+
+    const offset = hasPagination
+      ? (parseInt(page) - 1) * parseInt(booksPerPage)
+      : undefined;
+    const limit = hasPagination ? parseInt(booksPerPage) : undefined;
 
     const libBooks = await Library.findAll({
       where: { userId: userId },
       include: [
         { model: Book, attributes: ["coverImage", "page", "author", "title"] },
       ],
+      limit,
+      offset,
     });
 
     return res.status(200).json({

@@ -1,6 +1,7 @@
 const db = require("../models");
 const { v4: uuidv4 } = require("uuid");
 const errorCatch = require("../errors/errorCatch");
+const { Op } = require("sequelize");
 
 const Book = db.Book;
 
@@ -68,14 +69,14 @@ const getOneBook = async (req, res) => {
   try {
     const bookId = req.params.id;
 
-    const isBookDataExist = await Book.findOne({ where: { bookId: bookId } });
+    const bookData = await Book.findOne({ where: { bookId: bookId } });
 
-    if (!isBookDataExist) {
+    if (!bookData) {
       return res.status(404).json({ message: "Book Not Found" });
     }
 
     return res.status(200).json({
-      payload: isBookDataExist,
+      payload: bookData,
       message: "Successfully get book data",
     });
   } catch (err) {
@@ -85,8 +86,7 @@ const getOneBook = async (req, res) => {
 
 const getOneBookByName = async (req, res) => {
   try {
-    const { bookTitle } = req.body;
-    console.log(bookTitle);
+    const { bookTitle } = req.query; // it can be query
     const isBookDataExist = await Book.findOne({ where: { title: bookTitle } });
 
     if (!isBookDataExist) {
@@ -117,6 +117,28 @@ const getAllBook = async (req, res) => {
     return errorCatch(res, err, 400, "Get All Book");
   }
 };
+
+const getBooksByCount = async (req, res) => {
+  try {
+    const { page, pageSize } = req.query;
+    const offset = (parseInt(page) - 1) * parseInt(pageSize);
+    const limit = parseInt(pageSize);
+    console.log(page, pageSize);
+    const bookData = await Book.findAll({ limit, offset });
+
+    if (!bookData) {
+      return res.status(404).json({ message: "Books not found" });
+    }
+
+    return res.status(200).json({
+      payload: { bookData },
+      message: "Succesfully get book data",
+    });
+  } catch (err) {
+    return errorCatch(res, err, 400, "Get Books");
+  }
+};
+
 const getAllBookByName = async (req, res) => {
   try {
     const bookTitle = req.body;
@@ -148,6 +170,25 @@ const getAllBookByName = async (req, res) => {
   }
 };
 
+const getAllBookByRating = async (req, res) => {
+  try {
+    const ratingRange = parseFloat(req.query.ratingRange);
+    const limit = parseInt(req.query.limit);
+
+    const bookData = await Book.findAll({
+      where: { rating: { [Op.gte]: ratingRange } },
+      limit,
+    });
+
+    return res.status(200).json({
+      payload: { bookData },
+      message: "Successfully get Books by Rating",
+    });
+  } catch (err) {
+    return errorCatch(res, err, 400, "Get Book By Rating");
+  }
+};
+
 module.exports = {
   addBook,
   deleteBook,
@@ -155,4 +196,6 @@ module.exports = {
   getOneBookByName,
   getAllBook,
   getAllBookByName,
+  getBooksByCount,
+  getAllBookByRating,
 };

@@ -9,5 +9,7 @@ router.get("/books", bookController.getAllBook);
 router.get("/books/one/", bookController.getOneBookByName);
 router.get("/:id", bookController.getOneBook);
 router.get("/books/all/", bookController.getAllBookByName);
+router.get("/books/sized/", bookController.getBooksByCount);
+router.get("/books/rating/", bookController.getAllBookByRating);
 
 module.exports = router;
