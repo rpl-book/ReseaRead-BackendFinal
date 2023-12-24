@@ -25,7 +25,7 @@ const addBookToLib = async (req, res) => {
         .json({ message: "Book is already in the library" });
     }
 
-    const newLibrary = await Library.create({
+    await Library.create({
       libraryId: uuidv4(),
       userId: userId,
       bookId: isBookDataExist.bookId,
@@ -43,12 +43,11 @@ const addBookToLib = async (req, res) => {
   }
 };
 
-const deleteBookFromLib = async (req, res) => {
+const removeBookFromLib = async (req, res) => {
   try {
-    const { userId, bookId } = req.params;
-
+    const libraryId = req.params.id;
     const bookInLib = await Library.findOne({
-      where: { userId: userId, bookId: bookId },
+      where: { libraryId: libraryId },
     });
 
     if (!bookInLib) {
@@ -57,7 +56,7 @@ const deleteBookFromLib = async (req, res) => {
         .json({ message: "Failed to Find Book in Library" });
     }
 
-    await Library.destroy({ where: { userId: userId, bookId: bookId } });
+    await Library.destroy({ where: { libraryId: libraryId } });
     return res
       .status(200)
       .json({ message: "Successfully Delete Book from Library" });
@@ -117,7 +116,7 @@ const getAllBookLibByUserId = async (req, res) => {
     errorCatch(res, err, 500, "Get All User's Book");
   }
 };
-
+/*
 const getAllBookByStatus = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -145,11 +144,10 @@ const getAllBookByStatus = async (req, res) => {
     return errorCatch(res, err, 500, "Get User's Book Read Status");
   }
 };
-
+*/
 module.exports = {
   addBookToLib,
-  deleteBookFromLib,
+  removeBookFromLib,
   updateBookDataInLib,
   getAllBookLibByUserId,
-  getAllBookByStatus,
 };

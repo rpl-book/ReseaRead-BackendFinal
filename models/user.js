@@ -6,14 +6,17 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       User.hasMany(models.Library, {
         foreignKey: "userId",
+        onDelete: "CASCADE",
       });
 
       User.hasMany(models.UserPost, {
         foreignKey: "userId",
+        onDelete: "CASCADE",
       });
 
       User.hasMany(models.Review, {
         foreignKey: "userId",
+        onDelete: "CASCADE",
       });
     }
   }

@@ -41,7 +41,7 @@ const addBook = async (req, res) => {
 
     return res.status(200).json({
       payload: newBook,
-      message: "Success add new Book to our App",
+      message: "Success adding new Book",
     });
   } catch (err) {
     return errorCatch(res, err, 500, "Add New Book");
@@ -72,7 +72,7 @@ const getOneBook = async (req, res) => {
     const bookData = await Book.findOne({ where: { bookId: bookId } });
 
     if (!bookData) {
-      return res.status(404).json({ message: "Book Not Found" });
+      return res.status(204).json({ message: "Book Not Found" });
     }
 
     return res.status(200).json({
@@ -90,7 +90,7 @@ const getOneBookByName = async (req, res) => {
     const isBookDataExist = await Book.findOne({ where: { title: bookTitle } });
 
     if (!isBookDataExist) {
-      return res.status(404).json({ message: "Book Not Found" });
+      return res.status(200).json({ message: "Book Not Found" });
     }
 
     return res.status(200).json({

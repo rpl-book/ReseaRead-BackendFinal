@@ -9,11 +9,11 @@ const config = {
     dialect: process.env.DB_DEV_DIALECT || "mariadb",
   },
   production: {
-    username: process.env.DB_PROD_USER,
-    password: process.env.DB_PROD_PASSWORD,
-    database: process.env.DB_PROD_DATABASE,
-    host: process.env.DB_PROD_HOST,
-    dialect: process.env.DB_PROD_DIALECT || "postgres",
+    username: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    database: process.env.POSTGRES_DATABASE,
+    host: process.env.POSTGRES_HOST,
+    dialect: process.env.POSTGRES_DIALECT || "postgres",
   },
 };
 

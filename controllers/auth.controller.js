@@ -22,7 +22,9 @@ const userRegister = async (req, res) => {
       return res.status(400).json({ message: "Invalid Email Address" });
     }
 
-    if (password.length >= minPassLength || password.length <= maxPassLength) {
+    if (
+      !(password.length >= minPassLength && password.length <= maxPassLength)
+    ) {
       return res.status(400).json({
         message: `Password must be between ${minPassLength} and ${maxPassLength} characters`,
       });

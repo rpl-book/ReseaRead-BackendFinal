@@ -6,10 +6,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Book.hasMany(models.Library, {
         foreignKey: "bookId",
+        onDelete: "CASCADE",
       });
 
       Book.hasMany(models.Review, {
         foreignKey: "bookId",
+        onDelete: "CASCADE",
       });
     }
   }

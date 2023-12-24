@@ -6,10 +6,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Library.belongsTo(models.User, {
         foreignKey: "userId",
+        onDelete: "CASCADE",
       });
 
       Library.belongsTo(models.Book, {
         foreignKey: "bookId",
+        onDelete: "CASCADE",
       });
     }
   }
