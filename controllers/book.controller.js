@@ -123,7 +123,6 @@ const getBooksByCount = async (req, res) => {
     const { page, pageSize } = req.query;
     const offset = (parseInt(page) - 1) * parseInt(pageSize);
     const limit = parseInt(pageSize);
-    console.log(page, pageSize);
     const bookData = await Book.findAll({ limit, offset });
 
     if (!bookData) {
