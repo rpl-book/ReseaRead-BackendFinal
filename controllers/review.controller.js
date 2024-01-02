@@ -49,7 +49,7 @@ const getBookReviews = async (req, res) => {
       message: "Sucesssfully get book reviews",
     });
   } catch (err) {
-    return errorCatch("");
+    return errorCatch(res, err, 500, "Retrive Reviews");
   }
 };
 
